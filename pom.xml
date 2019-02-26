@@ -5,7 +5,7 @@
 	<groupId>com.mulampaka.spring.data.jdbc</groupId>
 	<artifactId>spring-data-jdbc-codegen</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.4</version>
+	<version>1.0.5</version>
 	<name>Spring Data Jdbc Code Generator</name>
 	<url>https://github.com/kalyanmulampaka</url>
 	<properties>
@@ -20,7 +20,7 @@
 		<postgresql.jdbc.version>9.1-901.jdbc4</postgresql.jdbc.version>
 		<mysql.jdbc.version>5.0.4</mysql.jdbc.version>
         <testng.version>6.9.10</testng.version>
-		<commons.lang.version>2.4</commons.lang.version>
+		<commons.lang3.version>3.4</commons.lang3.version>
 		<commons.io.version>2.4</commons.io.version>
 		<commons.logging.version>1.1.1</commons.logging.version>
 	</properties>
@@ -92,9 +92,9 @@
 			<version>${mysql.jdbc.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>${commons.lang.version}</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons.lang3.version}</version>
 		</dependency>
 		<!-- Logging -->
 		<dependency>

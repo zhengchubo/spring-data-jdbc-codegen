@@ -18,8 +18,8 @@
  */
 package com.mulampaka.spring.data.jdbc.codegen;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.mulampaka.spring.data.jdbc.codegen.util.CodeGenUtil;

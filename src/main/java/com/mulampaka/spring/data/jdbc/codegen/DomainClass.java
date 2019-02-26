@@ -20,8 +20,8 @@ package com.mulampaka.spring.data.jdbc.codegen;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.mulampaka.spring.data.jdbc.codegen.util.CodeGenUtil;
@@ -73,7 +73,7 @@ public class DomainClass extends BaseClass
 	@Override
 	protected void addImports ()
 	{
-		this.imports.add ("org.apache.commons.lang.builder.ToStringBuilder");
+		this.imports.add ("org.apache.commons.lang3.builder.ToStringBuilder");
 	}
 	
 	public boolean isGenerateJsr303Annotations ()

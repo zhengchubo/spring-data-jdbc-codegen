@@ -19,7 +19,7 @@
 package com.mulampaka.spring.data.jdbc.codegen;
 
 import java.util.List;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.mulampaka.spring.data.jdbc.codegen.util.CodeGenUtil;
@@ -58,7 +58,7 @@ public class DBClass extends BaseClass
 	protected void printDBTableInfo ()
 	{
 		// add the table name
-		sourceBuf.append ("\tprivate static String TABLE_NAME = \"" + this.name.toUpperCase () + "\";\n\n");
+		sourceBuf.append ("\tprivate static String TABLE_NAME = \"" + this.name + "\";\n\n");
 		
 		// add the table name
 		sourceBuf.append ("\tprivate static String TABLE_ALIAS = \"" + CodeGenUtil.createTableAlias (this.name.toLowerCase ()) + "\";\n\n");
