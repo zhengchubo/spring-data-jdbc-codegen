@@ -26,7 +26,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 @ContextConfiguration (loader = AnnotationConfigContextLoader.class, classes = { TestSpringConfiguration.class }, inheritLocations = false)
 public abstract class SpringJdbcBaseTest extends AbstractTestNGSpringContextTests
 {
-	
-	
+
+
 
 }

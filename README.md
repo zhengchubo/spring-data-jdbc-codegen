@@ -84,24 +84,24 @@ Sample code
       
           private static String TABLE_ALIAS = "com";
          
-         	public static String getTableName()
-         	{
-         		return TABLE_NAME;
-         	}
+             public static String getTableName()
+             {
+                 return TABLE_NAME;
+             }
          
-         	public static String getTableAlias()
-         	{
-         		return TABLE_NAME + " as " + TABLE_ALIAS;
-         	}
+             public static String getTableAlias()
+             {
+                 return TABLE_NAME + " as " + TABLE_ALIAS;
+             }
          
-         	public enum COLUMNS
-         	{
-         		ID("id"),
-         		USER_NAME("user_name"),
-         		CONTENTS("contents"),
-         		CREATED_TIME("created_time"),
-         		FAVOURITE_COUNT("favourite_count"),
-         		;
+             public enum COLUMNS
+             {
+                 ID("id"),
+                 USER_NAME("user_name"),
+                 CONTENTS("contents"),
+                 CREATED_TIME("created_time"),
+                 FAVOURITE_COUNT("favourite_count"),
+                 ;
              ...
            }
  ```
@@ -109,35 +109,35 @@ Sample code
    **```RowMapper``` and ```RowUnMapper```** classes to read and write the POJO class to database.
  
  ``` java
-    	public static final class  CommentsRowMapper implements RowMapper<Comments>
-    	{
-    		public Comments mapRow(ResultSet rs, int rowNum) throws SQLException 
-    		{
-    			Comments obj = new Comments();
-    			obj.setId(rs.getInt(COLUMNS.ID.getColumnName()));
-    			obj.setUserName(rs.getString(COLUMNS.USER_NAME.getColumnName()));
-    			obj.setContents(rs.getString(COLUMNS.CONTENTS.getColumnName()));
-    			obj.setCreatedTime(rs.getTimestamp(COLUMNS.CREATED_TIME.getColumnName()));
-    			obj.setFavouriteCount(rs.getInt(COLUMNS.FAVOURITE_COUNT.getColumnName()));
-    			return obj;
-    		}
-    	}
+        public static final class  CommentsRowMapper implements RowMapper<Comments>
+        {
+            public Comments mapRow(ResultSet rs, int rowNum) throws SQLException 
+            {
+                Comments obj = new Comments();
+                obj.setId(rs.getInt(COLUMNS.ID.getColumnName()));
+                obj.setUserName(rs.getString(COLUMNS.USER_NAME.getColumnName()));
+                obj.setContents(rs.getString(COLUMNS.CONTENTS.getColumnName()));
+                obj.setCreatedTime(rs.getTimestamp(COLUMNS.CREATED_TIME.getColumnName()));
+                obj.setFavouriteCount(rs.getInt(COLUMNS.FAVOURITE_COUNT.getColumnName()));
+                return obj;
+            }
+        }
     
-    	
-    	public static final class CommentsRowUnmapper implements RowUnmapper<Comments>
-    	{
-    		public Map<String, Object> mapColumns(Comments comments)
-    		{
-    			Map<String, Object> mapping = new LinkedHashMap<String, Object>();
-    			mapping.put(COLUMNS.ID.getColumnName(), comments.getId());
-    			mapping.put(COLUMNS.USER_NAME.getColumnName(), comments.getUserName());
-    			mapping.put(COLUMNS.CONTENTS.getColumnName(), comments.getContents());
-    			if (comments.getCreatedTime() != null)
-    				mapping.put(COLUMNS.CREATED_TIME.getColumnName(), new Timestamp (comments.getCreatedTime().getTime()));
-    			mapping.put(COLUMNS.FAVOURITE_COUNT.getColumnName(), comments.getFavouriteCount());
-    			return mapping;
-    		}
-    	}
+        
+        public static final class CommentsRowUnmapper implements RowUnmapper<Comments>
+        {
+            public Map<String, Object> mapColumns(Comments comments)
+            {
+                Map<String, Object> mapping = new LinkedHashMap<String, Object>();
+                mapping.put(COLUMNS.ID.getColumnName(), comments.getId());
+                mapping.put(COLUMNS.USER_NAME.getColumnName(), comments.getUserName());
+                mapping.put(COLUMNS.CONTENTS.getColumnName(), comments.getContents());
+                if (comments.getCreatedTime() != null)
+                    mapping.put(COLUMNS.CREATED_TIME.getColumnName(), new Timestamp (comments.getCreatedTime().getTime()));
+                mapping.put(COLUMNS.FAVOURITE_COUNT.getColumnName(), comments.getFavouriteCount());
+                return mapping;
+            }
+        }
     ...
 ```
   
@@ -150,30 +150,30 @@ Sample code
     
         final static Logger logger = LoggerFactory.getLogger (CommentsRepository.class);
     
-       	public CommentsRepository()
-       	{
-       		super (CommentsDB.ROW_MAPPER, CommentsDB.ROW_UNMAPPER, CommentsDB.getTableName ());
-       	}
+           public CommentsRepository()
+           {
+               super (CommentsDB.ROW_MAPPER, CommentsDB.ROW_UNMAPPER, CommentsDB.getTableName ());
+           }
        
-       	public CommentsRepository(RowMapper<Comments> rowMapper, RowUnmapper<Comments> rowUnmapper, String idColumn)
-       	{
-       		super (CommentsDB.ROW_MAPPER, CommentsDB.ROW_UNMAPPER, CommentsDB.getTableName (), idColumn);
-       	}
+           public CommentsRepository(RowMapper<Comments> rowMapper, RowUnmapper<Comments> rowUnmapper, String idColumn)
+           {
+               super (CommentsDB.ROW_MAPPER, CommentsDB.ROW_UNMAPPER, CommentsDB.getTableName (), idColumn);
+           }
        
-       	@Override
-       	protected Comments postCreate(Comments entity, Number generatedId)
-       	{
-       		entity.setId(generatedId.intValue());
-       		entity.setPersisted(true);
-       		return entity;
-       	}
+           @Override
+           protected Comments postCreate(Comments entity, Number generatedId)
+           {
+               entity.setId(generatedId.intValue());
+               entity.setPersisted(true);
+               return entity;
+           }
        
        
-       	public List<Comments> getCommentsByUserName (Long userName)
-       	{
-       		String sql = "select * from " + CommentsDB.getTableName() + " where " + CommentsDB.COLUMNS.USER_NAME.getColumnName() + " = ? ";
-       		return this.getJdbcOperations ().query (sql, new Object[] { userName }, CommentsDB.ROW_MAPPER);
-       	}
+           public List<Comments> getCommentsByUserName (Long userName)
+           {
+               String sql = "select * from " + CommentsDB.getTableName() + " where " + CommentsDB.COLUMNS.USER_NAME.getColumnName() + " = ? ";
+               return this.getJdbcOperations ().query (sql, new Object[] { userName }, CommentsDB.ROW_MAPPER);
+           }
        ...
 ```    
 
@@ -200,30 +200,30 @@ If **```generate.jsr303.annotations=true```** then the POJO created will have th
     
      private static final long serialVersionUID = 1L;
     
-    	@NotNull (groups = { Default.class })
-    	@Null (groups = { Default.class })
-    	private Integer id;
+        @NotNull (groups = { Default.class })
+        @Null (groups = { Default.class })
+        private Integer id;
     
-    	@Size (max = 256)
-    	private String userName;
+        @Size (max = 256)
+        private String userName;
     
-    	@Size (max = 1000)
-    	private String contents;
+        @Size (max = 1000)
+        private String contents;
     
-    	@NotNull
-    	private Date createdTime;
+        @NotNull
+        private Date createdTime;
     
-    	@NotNull
-    	private Integer favouriteCount;
+        @NotNull
+        private Integer favouriteCount;
     
-    	private transient boolean persisted;
+        private transient boolean persisted;
     
-    	private Users users;
+        private Users users;
     
-    	public Comments ()
-    	{
+        public Comments ()
+        {
     
-    	}
+        }
 ```
 
 
@@ -313,11 +313,11 @@ $ mvn javadoc:jar source:jar install
  1.1 Add the following maven dependency to your pom.xml.
 
 ``` xml   
-    	<dependency>
-   			<groupId>com.mulampaka.spring.data.jdbc</groupId>
-   			<artifactId>spring-data-jdbc-codegen</artifactId>
-   			<version>1.0.0</version>
-   		</dependency>
+        <dependency>
+               <groupId>com.mulampaka.spring.data.jdbc</groupId>
+               <artifactId>spring-data-jdbc-codegen</artifactId>
+               <version>1.0.0</version>
+           </dependency>
 ```
 
 Step 2: Create properties file

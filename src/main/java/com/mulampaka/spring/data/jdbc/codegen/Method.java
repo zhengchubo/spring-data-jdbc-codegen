@@ -25,55 +25,55 @@ package com.mulampaka.spring.data.jdbc.codegen;
  */
 public class Method
 {
-	private String name;
-	private Parameter parameter;
-	private boolean generateSetter = true;
-	private boolean generateGetter = true;
+    private String name;
+    private Parameter parameter;
+    private boolean generateSetter = true;
+    private boolean generateGetter = true;
 
-	public Method ()
-	{
+    public Method ()
+    {
 
-	}
+    }
 
-	public String getName ()
-	{
-		return name;
-	}
+    public String getName ()
+    {
+        return name;
+    }
 
-	public void setName (String name)
-	{
-		this.name = name;
-	}
+    public void setName (String name)
+    {
+        this.name = name;
+    }
 
-	public Parameter getParameter ()
-	{
-		return parameter;
-	}
+    public Parameter getParameter ()
+    {
+        return parameter;
+    }
 
-	public void setParameter (Parameter parameter)
-	{
-		this.parameter = parameter;
-	}
+    public void setParameter (Parameter parameter)
+    {
+        this.parameter = parameter;
+    }
 
-	public boolean isGenerateSetter ()
-	{
-		return generateSetter;
-	}
-	
-	public void setGenerateSetter (boolean generateSetter)
-	{
-		this.generateSetter = generateSetter;
-	}
-	
-	public boolean isGenerateGetter ()
-	{
-		return generateGetter;
-	}
-	
-	public void setGenerateGetter (boolean generateGetter)
-	{
-		this.generateGetter = generateGetter;
-	}
+    public boolean isGenerateSetter ()
+    {
+        return generateSetter;
+    }
+
+    public void setGenerateSetter (boolean generateSetter)
+    {
+        this.generateSetter = generateSetter;
+    }
+
+    public boolean isGenerateGetter ()
+    {
+        return generateGetter;
+    }
+
+    public void setGenerateGetter (boolean generateGetter)
+    {
+        this.generateGetter = generateGetter;
+    }
 
 
 

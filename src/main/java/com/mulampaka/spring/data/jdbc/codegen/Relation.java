@@ -20,80 +20,81 @@ package com.mulampaka.spring.data.jdbc.codegen;
 
 public class Relation
 {
-	
-	private String parent;
-	private String child;
-	private RelationType type;
 
-	public Relation ()
-	{
-		
-	}
-	
-	public enum RelationType
-	{
-		ONE_TO_MANY ("OneToMany"),
-		ONE_TO_ONE ("OneToOne"),
-		UNKNOWN ("Unknown");
-		
-		private String name;
-		
-		private RelationType (String name)
-		{
-			this.name = name;
-		}
-		
-		public String getName ()
-		{
-			return this.name;
-		}
-		
-		public void setName (String name)
-		{
-			this.name = name;
-		}
-		
-		public static RelationType getByName (String name)
-		{
-			for (RelationType t : RelationType.values ())
-			{
-				if (t.getName ().equalsIgnoreCase (name))
-					return t;
-			}
-			return UNKNOWN;
-		}
+    private String parent;
+    private String child;
+    private RelationType type;
 
-	}
-	
-	public String getParent ()
-	{
-		return this.parent;
-	}
-	
-	public void setParent (String parent)
-	{
-		this.parent = parent;
-	}
-	
-	public String getChild ()
-	{
-		return this.child;
-	}
-	
-	public void setChild (String child)
-	{
-		this.child = child;
-	}
-	
-	public RelationType getType ()
-	{
-		return this.type;
-	}
-	
-	public void setType (RelationType type)
-	{
-		this.type = type;
-	}
-	
+    public Relation ()
+    {
+
+    }
+
+    public enum RelationType
+    {
+        ONE_TO_MANY ("OneToMany"),
+        ONE_TO_ONE ("OneToOne"),
+        UNKNOWN ("Unknown");
+
+        private String name;
+
+        private RelationType (String name)
+        {
+            this.name = name;
+        }
+
+        public String getName ()
+        {
+            return this.name;
+        }
+
+        public void setName (String name)
+        {
+            this.name = name;
+        }
+
+        public static RelationType getByName (String name)
+        {
+            for (RelationType t : RelationType.values ())
+            {
+                if (t.getName ().equalsIgnoreCase (name)) {
+                    return t;
+                }
+            }
+            return UNKNOWN;
+        }
+
+    }
+
+    public String getParent ()
+    {
+        return this.parent;
+    }
+
+    public void setParent (String parent)
+    {
+        this.parent = parent;
+    }
+
+    public String getChild ()
+    {
+        return this.child;
+    }
+
+    public void setChild (String child)
+    {
+        this.child = child;
+    }
+
+    public RelationType getType ()
+    {
+        return this.type;
+    }
+
+    public void setType (RelationType type)
+    {
+        this.type = type;
+    }
+
 
 }

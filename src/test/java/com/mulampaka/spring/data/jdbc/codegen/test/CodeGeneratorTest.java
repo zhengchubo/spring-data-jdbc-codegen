@@ -27,22 +27,22 @@ import com.mulampaka.spring.data.jdbc.codegen.test.config.SpringJdbcBaseTest;
 public class CodeGeneratorTest extends SpringJdbcBaseTest
 {
 
-	final static Logger logger = LoggerFactory.getLogger(CodeGeneratorTest.class);
+    final static Logger logger = LoggerFactory.getLogger(CodeGeneratorTest.class);
 
-	private CodeGenerator generator;
+    private CodeGenerator generator;
 
-	public CodeGeneratorTest ()
-	{
+    public CodeGeneratorTest ()
+    {
 
-	}
+    }
 
-	@Test
-	public void generate () throws Exception
-	{
-		generator = new CodeGenerator ();
-		generator.setPropertiesFile ("src/test/resources/codegenerator-test.properties");
+    @Test
+    public void generate () throws Exception
+    {
+        generator = new CodeGenerator ();
+        generator.setPropertiesFile ("src/test/resources/codegenerator-test.properties");
         generator.generate ();
-	}
+    }
 
 
 }

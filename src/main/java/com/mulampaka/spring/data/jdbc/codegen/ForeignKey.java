@@ -26,77 +26,77 @@ package com.mulampaka.spring.data.jdbc.codegen;
  */
 public class ForeignKey
 {
-	private String fkName;
-	private String fkTableName;
-	private String fkColumnName;
-	private String refTableName;
-	private String refColumnName;
-	private String fieldName;
-	
-	public ForeignKey ()
-	{
-		
-	}
-	
-	public String getFkName ()
-	{
-		return this.fkName;
-	}
-	
-	public void setFkName (String fkName)
-	{
-		this.fkName = fkName;
-	}
-	
-	public String getFkTableName ()
-	{
-		return this.fkTableName;
-	}
-	
-	public void setFkTableName (String fkTableName)
-	{
-		this.fkTableName = fkTableName;
-	}
-	
-	public String getFkColumnName ()
-	{
-		return this.fkColumnName;
-	}
-	
-	public void setFkColumnName (String fkColumnName)
-	{
-		this.fkColumnName = fkColumnName;
-	}
-	
-	public String getRefTableName ()
-	{
-		return this.refTableName;
-	}
-	
-	public void setRefTableName (String refTableName)
-	{
-		this.refTableName = refTableName;
-	}
-	
-	public String getRefColumnName ()
-	{
-		return this.refColumnName;
-	}
-	
-	public void setRefColumnName (String refColumnName)
-	{
-		this.refColumnName = refColumnName;
-	}
-	
-	public String getFieldName ()
-	{
-		return this.fieldName;
-	}
-	
-	public void setFieldName (String fieldName)
-	{
-		this.fieldName = fieldName;
-	}
-	
+    private String fkName;
+    private String fkTableName;
+    private String fkColumnName;
+    private String refTableName;
+    private String refColumnName;
+    private String fieldName;
+
+    public ForeignKey ()
+    {
+
+    }
+
+    public String getFkName ()
+    {
+        return this.fkName;
+    }
+
+    public void setFkName (String fkName)
+    {
+        this.fkName = fkName;
+    }
+
+    public String getFkTableName ()
+    {
+        return this.fkTableName;
+    }
+
+    public void setFkTableName (String fkTableName)
+    {
+        this.fkTableName = fkTableName;
+    }
+
+    public String getFkColumnName ()
+    {
+        return this.fkColumnName;
+    }
+
+    public void setFkColumnName (String fkColumnName)
+    {
+        this.fkColumnName = fkColumnName;
+    }
+
+    public String getRefTableName ()
+    {
+        return this.refTableName;
+    }
+
+    public void setRefTableName (String refTableName)
+    {
+        this.refTableName = refTableName;
+    }
+
+    public String getRefColumnName ()
+    {
+        return this.refColumnName;
+    }
+
+    public void setRefColumnName (String refColumnName)
+    {
+        this.refColumnName = refColumnName;
+    }
+
+    public String getFieldName ()
+    {
+        return this.fieldName;
+    }
+
+    public void setFieldName (String fieldName)
+    {
+        this.fieldName = fieldName;
+    }
+
 
 }

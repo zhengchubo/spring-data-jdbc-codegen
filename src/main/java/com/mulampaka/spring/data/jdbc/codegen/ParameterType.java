@@ -25,46 +25,46 @@ package com.mulampaka.spring.data.jdbc.codegen;
  */
 public enum ParameterType
 {
-	OBJECT ("Object", "Object"),
-	STRING ("String", "String"),
-	BOOLEAN ("Boolean", "boolean"),
-	DATE ("Date", "Date"),
-	TIMESTAMP ("Timestamp", "Timestamp"),
-	LONG ("Long", "long"),
-	INTEGER ("Integer", "int"),
-	FLOAT ("Float", "float"),
-	DOUBLE ("Double", "double"),
-	CHAR ("Character", "char"),
-	LIST ("List", "List")
-	;
+    OBJECT ("Object", "Object"),
+    STRING ("String", "String"),
+    BOOLEAN ("Boolean", "boolean"),
+    DATE ("Date", "Date"),
+    TIMESTAMP ("Timestamp", "Timestamp"),
+    LONG ("Long", "long"),
+    INTEGER ("Integer", "int"),
+    FLOAT ("Float", "float"),
+    DOUBLE ("Double", "double"),
+    CHAR ("Character", "char"),
+    LIST ("List", "List")
+    ;
 
-	private String name;
-	private String primitiveName;
-	
-	private ParameterType (String name, String primitiveName)
-	{
-		this.name = name;
-		this.primitiveName = primitiveName;
+    private String name;
+    private String primitiveName;
 
-	}
-	public String getName ()
-	{
-		return name;
-	}
-	public void setName (String name)
-	{
-		this.name = name;
-	}
-	
-	public String getPrimitiveName ()
-	{
-		return this.primitiveName;
-	}
-	
-	public void setPrimitiveName (String primitiveName)
-	{
-		this.primitiveName = primitiveName;
-	}
+    private ParameterType (String name, String primitiveName)
+    {
+        this.name = name;
+        this.primitiveName = primitiveName;
+
+    }
+    public String getName ()
+    {
+        return name;
+    }
+    public void setName (String name)
+    {
+        this.name = name;
+    }
+
+    public String getPrimitiveName ()
+    {
+        return this.primitiveName;
+    }
+
+    public void setPrimitiveName (String primitiveName)
+    {
+        this.primitiveName = primitiveName;
+    }
 
 
 }

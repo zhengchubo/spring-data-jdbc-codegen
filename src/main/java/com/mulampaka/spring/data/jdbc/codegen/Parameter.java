@@ -25,51 +25,51 @@ package com.mulampaka.spring.data.jdbc.codegen;
  */
 public class Parameter
 {
-	private String name;
-	private String className;
-	private ParameterType type;
+    private String name;
+    private String className;
+    private ParameterType type;
 
-	public Parameter (String name, ParameterType type)
-	{
-		this.name = name;
-		this.type = type;
-	}
+    public Parameter (String name, ParameterType type)
+    {
+        this.name = name;
+        this.type = type;
+    }
 
-	public Parameter (String name, String className, ParameterType type)
-	{
-		this.name = name;
-		this.className = className;
-		this.type = type;
-	}
+    public Parameter (String name, String className, ParameterType type)
+    {
+        this.name = name;
+        this.className = className;
+        this.type = type;
+    }
 
-	public String getName ()
-	{
-		return name;
-	}
+    public String getName ()
+    {
+        return name;
+    }
 
-	public void setName (String name)
-	{
-		this.name = name;
-	}
+    public void setName (String name)
+    {
+        this.name = name;
+    }
 
-	public ParameterType getType ()
-	{
-		return type;
-	}
+    public ParameterType getType ()
+    {
+        return type;
+    }
 
-	public void setType (ParameterType type)
-	{
-		this.type = type;
-	}
+    public void setType (ParameterType type)
+    {
+        this.type = type;
+    }
 
-	public String getClassName ()
-	{
-		return this.className;
-	}
-	
-	public void setClassName (String className)
-	{
-		this.className = className;
-	}
+    public String getClassName ()
+    {
+        return this.className;
+    }
+
+    public void setClassName (String className)
+    {
+        this.className = className;
+    }
 
 }

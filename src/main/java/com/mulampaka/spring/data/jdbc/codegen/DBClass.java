@@ -32,349 +32,357 @@ import com.mulampaka.spring.data.jdbc.codegen.util.CodeGenUtil;
  */
 public class DBClass extends BaseClass
 {
-	
-	final static Logger logger = LoggerFactory.getLogger (DBClass.class);
-	public static String DB_CLASSSUFFIX = "DB";
+
+    final static Logger logger = LoggerFactory.getLogger (DBClass.class);
+    public static String DB_CLASSSUFFIX = "DB";
 
 
 
-	public DBClass ()
-	{
-		this.addImports ();
-		this.classSuffix = DB_CLASSSUFFIX;
-	}
-	
-	@Override
-	protected void addImports ()
-	{
-		this.imports.add ("java.sql.SQLException");
-		this.imports.add ("org.springframework.jdbc.core.RowMapper");
-		this.imports.add ("java.sql.ResultSet");
-		this.imports.add ("java.util.LinkedHashMap");
-		this.imports.add ("java.util.Map");
-		this.imports.add ("com.nurkiewicz.jdbcrepository.RowUnmapper");
-	}
-	
-	protected void printDBTableInfo ()
-	{
-		// add the table name
-		sourceBuf.append ("\tprivate static String TABLE_NAME = \"" + this.name + "\";\n\n");
-		
-		// add the table name
-		sourceBuf.append ("\tprivate static String TABLE_ALIAS = \"" + CodeGenUtil.createTableAlias (this.name.toLowerCase ()) + "\";\n\n");
-		
-		sourceBuf.append ("\tpublic static String getTableName()\n\t{\n\t\treturn TABLE_NAME;\n\t}\n\n");
-		
-		sourceBuf.append ("\tpublic static String getTableAlias()\n\t{\n\t\treturn TABLE_NAME + \" as \" + TABLE_ALIAS;\n\t}\n\n");
-        
-        sourceBuf.append ("\tpublic static String getAlias()\n\t{\n\t\treturn TABLE_ALIAS;\n\t}\n\n");
-	}
-
-    protected void printSelectAllColumns ()
+    public DBClass ()
     {
-        sourceBuf.append ("\tpublic static String selectAllColumns(boolean ... useAlias)\n\t{\n\t\treturn (useAlias[0] ? TABLE_ALIAS : TABLE_NAME) + \".*\";\n\t}\n\n");
+        this.addImports ();
+        this.classSuffix = DB_CLASSSUFFIX;
     }
 
-	protected void printRowMapper ()
-	{
-		String name = WordUtils.capitalize (CodeGenUtil.normalize (this.name));
-		// create mapper
-		sourceBuf.append ("\tpublic static final RowMapper<" + name + "> ROW_MAPPER = new " + name + "RowMapper ();\n");
-		
-		sourceBuf.append ("\tpublic static final class  " + name + "RowMapper implements RowMapper<" + name + ">\n");
-		this.printOpenBrace (1, 1);
-		
-		sourceBuf.append ("\t\tpublic " + name + " mapRow(ResultSet rs, int rowNum) throws SQLException \n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\t" + name + " obj = new " + name + "();\n");
-		for (Field field : this.fields)
-		{
-			if (field.isPersistable ())
-			{
-				String typeName = field.getType ().getName ();
-				if (field.getType () == ParameterType.INTEGER)
-				{
-					typeName = "Int";
-				}
-				else if (field.getType () == ParameterType.DATE)
-				{
-					typeName = "Timestamp";
-				}
-				sourceBuf.append ("\t\t\tobj.set" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "(rs.get" + typeName + "(COLUMNS." + field.getName ().toUpperCase () + ".getColumnName()));\n");
-			}
-		}
+    @Override
+    protected void addImports ()
+    {
+        this.imports.add ("java.sql.SQLException");
+        this.imports.add ("org.springframework.jdbc.core.RowMapper");
+        this.imports.add ("java.sql.ResultSet");
+        this.imports.add ("java.util.LinkedHashMap");
+        this.imports.add ("java.util.Map");
+        this.imports.add ("com.nurkiewicz.jdbcrepository.RowUnmapper");
+    }
 
-		if (this.pkeys.size () > 1)
-		{
-			sourceBuf.append ("\t\t\tobj.setPersisted(true);\n");
-		}
-		sourceBuf.append ("\t\t\treturn obj;\n");
-		this.printCloseBrace (2, 1);// end of method
-		this.printCloseBrace (1, 2); // end of inner mapper class
-	}
-	
-	protected void printRowUnMapper ()
-	{
-		String name = WordUtils.capitalize (CodeGenUtil.normalize (this.name));
-		// create unmapper
-		sourceBuf.append ("\tpublic static final RowUnmapper<" + name + "> ROW_UNMAPPER = new " + name + "RowUnmapper ();\n");
-		sourceBuf.append ("\tpublic static final class " + name + "RowUnmapper implements RowUnmapper<" + name + ">\n");
-		this.printOpenBrace (1, 1);
-		String objName = name.toLowerCase ();
-		sourceBuf.append ("\t\tpublic Map<String, Object> mapColumns(" + name + " " + objName + ")\n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\tMap<String, Object> mapping = new LinkedHashMap<String, Object>();\n");
-		for (Field field : this.fields)
-		{
-			if (field.isPersistable ())
-			{
-				if (field.getType () == ParameterType.DATE)
-				{
-					sourceBuf.append ("\t\t\tif (" + objName + ".get" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "() != null)\n");
-					sourceBuf.append ("\t\t\t\tmapping.put(COLUMNS." + field.getName ().toUpperCase () + ".getColumnName(), new Timestamp (" + objName + ".get" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "().getTime()));\n");
-				}
-				else
-				{
-					sourceBuf.append ("\t\t\tmapping.put(COLUMNS." + field.getName ().toUpperCase () + ".getColumnName(), " + objName + ".get" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "());\n");
-				}
-			}
-		}
-		sourceBuf.append ("\t\t\treturn mapping;\n");
-		this.printCloseBrace (2, 1);
-		this.printCloseBrace (1, 2);// end of inner unmapper class
-	}
-	
-	protected void printAliasRowMapper ()
-	{
-		String name = WordUtils.capitalize (CodeGenUtil.normalize (this.name));
-		// create alias mapper
-		sourceBuf.append ("\tpublic static final RowMapper<" + name + "> ALIAS_ROW_MAPPER = new " + name + "AliasRowMapper ();\n");
-		
-		sourceBuf.append ("\tpublic static final class  " + name + "AliasRowMapper implements RowMapper<" + name + ">\n");
-		this.printOpenBrace (1, 1);
-		List<Relation> relations = this.relations.get (this.name);
-		
-		if (relations != null && !relations.isEmpty ())
-		{
-			boolean loadAllRelations = false;
-			
-			for (Relation relation : relations)
-			{
-				switch (relation.getType ())
-				{
-				case ONE_TO_ONE:
-					loadAllRelations = true;
-					String child = CodeGenUtil.normalize (relation.getChild ());
-					sourceBuf.append ("\t\tprivate boolean load" + WordUtils.capitalize (child) + " = false;\n");
-					sourceBuf.append ("\t\tpublic void setLoad" + WordUtils.capitalize (child) + " (boolean load" + WordUtils.capitalize (child) + ")\n");
-					this.printOpenBrace (2, 1);
-					sourceBuf.append ("\t\t\tthis.load" + WordUtils.capitalize (child) + " = load" + WordUtils.capitalize (child) + ";\n");
-					this.printCloseBrace (2, 2);
-					break;
-				case ONE_TO_MANY:
-				case UNKNOWN:
-					break;
-				}
-			}
-			if (loadAllRelations)
-			{
-				sourceBuf.append ("\t\tprivate boolean loadAllRelations = false;\n");
-				sourceBuf.append ("\t\tpublic void setLoadAllRelations (boolean loadAllRelations)\n");
-				this.printOpenBrace (2, 1);
-				sourceBuf.append ("\t\t\tthis.loadAllRelations = loadAllRelations;\n");
-				this.printCloseBrace (2, 2);
-			}
-		}
+    protected void printDBTableInfo(String tabString)
+    {
+        // add the table name
+        sourceBuf.append (tabString + "private static String TABLE_NAME = \"" + this.name + "\";\n\n");
 
-		if (!this.fkeys.isEmpty ())
-		{
-			sourceBuf.append ("\t\tprivate boolean loadAllFKeys = false;\n");
-			sourceBuf.append ("\t\tpublic void setLoadAllFKeys (boolean loadAllFKeys)\n");
-			this.printOpenBrace (2, 1);
-			sourceBuf.append ("\t\t\tthis.loadAllFKeys = loadAllFKeys;\n");
-			this.printCloseBrace (2, 2);
+        // add the table name
+        sourceBuf.append (tabString + "private static String TABLE_ALIAS = \"" + CodeGenUtil.createTableAlias (this.name.toLowerCase ()) + "\";\n\n");
 
-			for (String fkColName : this.fkeys.keySet ())
-			{
-				ForeignKey fkey = this.fkeys.get (fkColName);
-				String refObj = WordUtils.capitalize (CodeGenUtil.normalize (fkey.getFieldName ()));
-				sourceBuf.append ("\t\tprivate boolean load" + refObj + " = false;\n");
-				sourceBuf.append ("\t\tpublic void setLoad" + refObj + " (boolean load" + refObj + ")\n");
-				this.printOpenBrace (2, 1);
-				sourceBuf.append ("\t\t\tthis.load" + refObj + " = load" + refObj + ";\n");
-				this.printCloseBrace (2, 2);
-			}
-		}
+        sourceBuf.append (tabString + "public static String getTableName()\n" + tabString + "{\n" + tabString + tabString + "return TABLE_NAME;\n" + tabString + "}\n\n");
 
-		sourceBuf.append ("\t\tpublic " + name + " mapRow(ResultSet rs, int rowNum) throws SQLException \n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\t" + name + " obj = new " + name + "();\n");
-		for (Field field : this.fields)
-		{
-			if (field.isPersistable ())
-			{
-				String typeName = field.getType ().getName ();
-				if (field.getType () == ParameterType.INTEGER)
-				{
-					typeName = "Int";
-				}
-				else if (field.getType () == ParameterType.DATE)
-				{
-					typeName = "Timestamp";
-				}
-                sourceBuf.append ("\t\t\tobj.set" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "(rs.get" + typeName + "(COLUMNS." + field.getName ().toUpperCase () + ".getColumnAliasName()));\n");
-			}
-		}
-		if (this.pkeys.size () > 1)
-		{
-			sourceBuf.append ("\t\t\tobj.setPersisted(true);\n");
-		}
-		if (!this.fkeys.isEmpty ())
-		{
-			for (String fkColName : this.fkeys.keySet ())
-			{
-				ForeignKey fkey = this.fkeys.get (fkColName);
-				String refObj = WordUtils.capitalize (CodeGenUtil.normalize (fkey.getFieldName ()));
-				String refClass = WordUtils.capitalize (CodeGenUtil.normalize (fkey.getRefTableName ()));
-				sourceBuf.append ("\t\t\tif (this.loadAllFKeys || this.load" + refObj + ")\n");
-				sourceBuf.append ("\t\t\t\tobj.set" + refObj + "(" + refClass + DBClass.DB_CLASSSUFFIX + ".ALIAS_ROW_MAPPER.mapRow(rs, rowNum)" + ");\n");
-			}
-		}
-		this.printRelations ();
-		sourceBuf.append ("\t\t\treturn obj;\n");
-		this.printCloseBrace (2, 1); // end of method
-		this.printCloseBrace (1, 2); // end of inner alias mapper class
-	}
-	
-	protected void printRelations ()
-	{
-		List<Relation> relations = this.relations.get (this.name);
-		if (relations != null && !relations.isEmpty ())
-		{
-			for (Relation relation : relations)
-			{
-				switch (relation.getType ())
-				{
-				case ONE_TO_ONE:
-					String child = CodeGenUtil.normalize (relation.getChild ());
-					sourceBuf.append ("\t\t\tif (this.loadAllRelations || this.load" + WordUtils.capitalize (child) + ")\n");
-					sourceBuf.append ("\t\t\t\tobj.set" + WordUtils.capitalize (child) + "(" + WordUtils.capitalize (child) + DBClass.DB_CLASSSUFFIX + ".ALIAS_ROW_MAPPER.mapRow(rs, rowNum)" + ");\n");
-					break;
-				case ONE_TO_MANY:
-				case UNKNOWN:
-					break;
-				}
-			}
-		}
-	}
+        sourceBuf.append (tabString + "public static String getTableAlias()\n" + tabString + "{\n" + tabString + tabString + "return TABLE_NAME + \" as \" + TABLE_ALIAS;\n" + tabString + "}\n\n");
+        
+        sourceBuf.append (tabString + "public static String getAlias()\n" + tabString + "{\n" + tabString + tabString + "return TABLE_ALIAS;\n" + tabString + "}\n\n");
+    }
 
-	protected void printAllAliasesMethod ()
-	{
-		// create all aliases
-		sourceBuf.append ("\tpublic static StringBuffer getAllColumnAliases ()\n");
-		this.printOpenBrace (1, 1);
-		sourceBuf.append ("\t\tStringBuffer strBuf = new StringBuffer ();\n");
-		sourceBuf.append ("\t\tint i = COLUMNS.values ().length;\n");
-		sourceBuf.append ("\t\tfor (COLUMNS c : COLUMNS.values ())\n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\tstrBuf.append (c.getColumnAliasAsName ());\n");
-		sourceBuf.append ("\t\t\tif (--i > 0)\n");
-		sourceBuf.append ("\t\t\t\tstrBuf.append (\", \");\n");
-		this.printCloseBrace (2, 1);
-		sourceBuf.append ("\t\treturn strBuf;\n");
-		this.printCloseBrace (1, 2);
-	}
+    protected void printSelectAllColumns (String tabString)
+    {
+        sourceBuf.append (tabString + "public static String selectAllColumns(boolean ... useAlias)\n" + tabString + "{\n" + tabString + tabString + "return (useAlias[0] ? TABLE_ALIAS : TABLE_NAME) + \".*\";\n" + tabString + "}\n\n");
+    }
+
+    protected void printRowMapper (String tabString)
+    {
+        String name = WordUtils.capitalize (CodeGenUtil.normalize (this.name));
+        // create mapper
+        sourceBuf.append (tabString + "public static final RowMapper<" + name + "> ROW_MAPPER = new " + name + "RowMapper ();\n");
+
+        sourceBuf.append (tabString + "public static final class  " + name + "RowMapper implements RowMapper<" + name + ">\n");
+        this.printOpenBrace (1, 1, tabString);
+        sourceBuf.append (tabString + tabString + "@Override\n");
+        sourceBuf.append (tabString + tabString + "public " + name + " mapRow(ResultSet rs, int rowNum) throws SQLException \n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + name + " obj = new " + name + "();\n");
+        for (Field field : this.fields)
+        {
+            if (field.isPersistable ())
+            {
+                String typeName = field.getType ().getName ();
+                if (field.getType () == ParameterType.INTEGER)
+                {
+                    typeName = "Int";
+                }
+                else if (field.getType () == ParameterType.DATE)
+                {
+                    typeName = "Timestamp";
+                }
+                sourceBuf.append (tabString + tabString + tabString + "obj.set" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "(rs.get" + typeName + "(COLUMNS." + field.getName ().toUpperCase () + ".getColumnName()));\n");
+            }
+        }
+
+        if (this.pkeys.size () > 1)
+        {
+            sourceBuf.append (tabString + tabString + tabString + "obj.setPersisted(true);\n");
+        }
+        sourceBuf.append (tabString + tabString + tabString + "return obj;\n");
+        this.printCloseBrace (2, 1, tabString);// end of method
+        this.printCloseBrace (1, 2, tabString); // end of inner mapper class
+    }
+
+    protected void printRowUnMapper(String tabString)
+    {
+        String name = WordUtils.capitalize (CodeGenUtil.normalize (this.name));
+        // create unmapper
+        sourceBuf.append (tabString + "public static final RowUnmapper<" + name + "> ROW_UNMAPPER = new " + name + "RowUnmapper ();\n");
+        sourceBuf.append (tabString + "public static final class " + name + "RowUnmapper implements RowUnmapper<" + name + ">\n");
+        this.printOpenBrace (1, 1, tabString);
+        String objName = name.toLowerCase ();
+        sourceBuf.append (tabString + tabString + "@Override\n");
+        sourceBuf.append (tabString + tabString + "public Map<String, Object> mapColumns(" + name + " " + objName + ")\n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + "Map<String, Object> mapping = new LinkedHashMap<String, Object>();\n");
+        for (Field field : this.fields)
+        {
+            if (field.isPersistable ())
+            {
+                if (field.getType () == ParameterType.DATE)
+                {
+                    sourceBuf.append (tabString + tabString + tabString + "if (" + objName + ".get" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "() != null)\n");
+                    this.printOpenBrace (3, 1, tabString);
+                    sourceBuf.append (tabString + tabString + tabString + tabString + "mapping.put(COLUMNS." + field.getName ().toUpperCase () + ".getColumnName(), new Timestamp (" + objName + ".get" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "().getTime()));\n");
+                    this.printCloseBrace (3, 1, tabString);
+                }
+                else
+                {
+                    sourceBuf.append (tabString + tabString + tabString + "mapping.put(COLUMNS." + field.getName ().toUpperCase () + ".getColumnName(), " + objName + ".get" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "());\n");
+                }
+            }
+        }
+        sourceBuf.append (tabString + tabString + tabString + "return mapping;\n");
+        this.printCloseBrace (2, 1, tabString);
+        this.printCloseBrace (1, 2, tabString);// end of inner unmapper class
+    }
+
+    protected void printAliasRowMapper (String tabString)
+    {
+        String name = WordUtils.capitalize (CodeGenUtil.normalize (this.name));
+        // create alias mapper
+        sourceBuf.append (tabString + "public static final RowMapper<" + name + "> ALIAS_ROW_MAPPER = new " + name + "AliasRowMapper ();\n");
+
+        sourceBuf.append (tabString + "public static final class  " + name + "AliasRowMapper implements RowMapper<" + name + ">\n");
+        this.printOpenBrace (1, 1, tabString);
+        List<Relation> relations = this.relations.get (this.name);
+
+        if (relations != null && !relations.isEmpty ())
+        {
+            boolean loadAllRelations = false;
+
+            for (Relation relation : relations)
+            {
+                switch (relation.getType ())
+                {
+                case ONE_TO_ONE:
+                    loadAllRelations = true;
+                    String child = CodeGenUtil.normalize (relation.getChild ());
+                    sourceBuf.append (tabString + tabString + "private boolean load" + WordUtils.capitalize (child) + " = false;\n");
+                    sourceBuf.append (tabString + tabString + "public void setLoad" + WordUtils.capitalize (child) + " (boolean load" + WordUtils.capitalize (child) + ")\n");
+                    this.printOpenBrace (2, 1, tabString);
+                    sourceBuf.append (tabString + tabString + tabString + "this.load" + WordUtils.capitalize (child) + " = load" + WordUtils.capitalize (child) + ";\n");
+                    this.printCloseBrace (2, 2, tabString);
+                    break;
+                case ONE_TO_MANY:
+                case UNKNOWN:
+                    break;
+                }
+            }
+            if (loadAllRelations)
+            {
+                sourceBuf.append (tabString + tabString + "private boolean loadAllRelations = false;\n");
+                sourceBuf.append (tabString + tabString + "public void setLoadAllRelations (boolean loadAllRelations)\n");
+                this.printOpenBrace (2, 1, tabString);
+                sourceBuf.append (tabString + tabString + tabString + "this.loadAllRelations = loadAllRelations;\n");
+                this.printCloseBrace (2, 2, tabString);
+            }
+        }
+
+        if (!this.fkeys.isEmpty ())
+        {
+            sourceBuf.append (tabString + tabString + "private boolean loadAllFKeys = false;\n");
+            sourceBuf.append (tabString + tabString + "public void setLoadAllFKeys (boolean loadAllFKeys)\n");
+            this.printOpenBrace (2, 1, tabString);
+            sourceBuf.append (tabString + tabString + tabString + "this.loadAllFKeys = loadAllFKeys;\n");
+            this.printCloseBrace (2, 2, tabString);
+
+            for (String fkColName : this.fkeys.keySet ())
+            {
+                ForeignKey fkey = this.fkeys.get (fkColName);
+                String refObj = WordUtils.capitalize (CodeGenUtil.normalize (fkey.getFieldName ()));
+                sourceBuf.append (tabString + tabString + "private boolean load" + refObj + " = false;\n");
+                sourceBuf.append (tabString + tabString + "public void setLoad" + refObj + " (boolean load" + refObj + ")\n");
+                this.printOpenBrace (2, 1, tabString);
+                sourceBuf.append (tabString + tabString + tabString + "this.load" + refObj + " = load" + refObj + ";\n");
+                this.printCloseBrace (2, 2, tabString);
+            }
+        }
+
+        sourceBuf.append (tabString + tabString + "@Override\n");
+        sourceBuf.append (tabString + tabString + "public " + name + " mapRow(ResultSet rs, int rowNum) throws SQLException \n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + name + " obj = new " + name + "();\n");
+        for (Field field : this.fields)
+        {
+            if (field.isPersistable ())
+            {
+                String typeName = field.getType ().getName ();
+                if (field.getType () == ParameterType.INTEGER)
+                {
+                    typeName = "Int";
+                }
+                else if (field.getType () == ParameterType.DATE)
+                {
+                    typeName = "Timestamp";
+                }
+                sourceBuf.append (tabString + tabString + tabString + "obj.set" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "(rs.get" + typeName + "(COLUMNS." + field.getName ().toUpperCase () + ".getColumnAliasName()));\n");
+            }
+        }
+        if (this.pkeys.size () > 1)
+        {
+            sourceBuf.append (tabString + tabString + tabString + "obj.setPersisted(true);\n");
+        }
+        if (!this.fkeys.isEmpty ())
+        {
+            for (String fkColName : this.fkeys.keySet ())
+            {
+                ForeignKey fkey = this.fkeys.get (fkColName);
+                String refObj = WordUtils.capitalize (CodeGenUtil.normalize (fkey.getFieldName ()));
+                String refClass = WordUtils.capitalize (CodeGenUtil.normalize (fkey.getRefTableName ()));
+                sourceBuf.append (tabString + tabString + tabString + "if (this.loadAllFKeys || this.load" + refObj + ")\n");
+                sourceBuf.append (tabString + tabString + tabString + tabString + "obj.set" + refObj + "(" + refClass + DBClass.DB_CLASSSUFFIX + ".ALIAS_ROW_MAPPER.mapRow(rs, rowNum)" + ");\n");
+            }
+        }
+        this.printRelations (tabString);
+        sourceBuf.append (tabString + tabString + tabString + "return obj;\n");
+        this.printCloseBrace (2, 1, tabString); // end of method
+        this.printCloseBrace (1, 2, tabString); // end of inner alias mapper class
+    }
+
+    protected void printRelations (String tabString)
+    {
+        List<Relation> relations = this.relations.get (this.name);
+        if (relations != null && !relations.isEmpty ())
+        {
+            for (Relation relation : relations)
+            {
+                switch (relation.getType ())
+                {
+                case ONE_TO_ONE:
+                    String child = CodeGenUtil.normalize (relation.getChild ());
+                    sourceBuf.append (tabString + tabString + tabString + "if (this.loadAllRelations || this.load" + WordUtils.capitalize (child) + ")\n");
+                    sourceBuf.append (tabString + tabString + tabString + tabString + "obj.set" + WordUtils.capitalize (child) + "(" + WordUtils.capitalize (child) + DBClass.DB_CLASSSUFFIX + ".ALIAS_ROW_MAPPER.mapRow(rs, rowNum)" + ");\n");
+                    break;
+                case ONE_TO_MANY:
+                case UNKNOWN:
+                    break;
+                }
+            }
+        }
+    }
+
+    protected void printAllAliasesMethod (String tabString)
+    {
+        // create all aliases
+        sourceBuf.append (tabString + "public static StringBuffer getAllColumnAliases ()\n");
+        this.printOpenBrace (1, 1, tabString);
+        sourceBuf.append (tabString + tabString + "StringBuffer strBuf = new StringBuffer ();\n");
+        sourceBuf.append (tabString + tabString + "int i = COLUMNS.values ().length;\n");
+        sourceBuf.append (tabString + tabString + "for (COLUMNS c : COLUMNS.values ())\n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + "strBuf.append (c.getColumnAliasAsName ());\n");
+        sourceBuf.append (tabString + tabString + tabString + "if (--i > 0)\n");
+        this.printOpenBrace (3, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + tabString + "strBuf.append (\", \");\n");
+        this.printCloseBrace (3, 1, tabString);
+        this.printCloseBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + "return strBuf;\n");
+        this.printCloseBrace (1, 2, tabString);
+    }
 
 
-	private void printColumnsEnum ()
-	{
-		sourceBuf.append ("\tpublic enum COLUMNS\n");
-		this.printOpenBrace (1, 1);
-		
-		for (Field field : this.fields)
-		{
-			if (field.isPersistable ())
-			{
-				sourceBuf.append ("\t\t" + field.getName ().toUpperCase () + "(\"" + field.getName () + "\"),\n");
-			}
-		}
-		sourceBuf.append ("\t\t;\n");
-		sourceBuf.append ("\n");
-		sourceBuf.append ("\t\tprivate String columnName;\n\n");
-		// create the constructor
-		sourceBuf.append ("\t\tprivate COLUMNS (String columnName)\n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\tthis.columnName = columnName;\n");
-		this.printCloseBrace (2, 2);
-		//create setters/getters
-		sourceBuf.append ("\t\tpublic void setColumnName (String columnName)\n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\tthis.columnName = columnName;\n");
-		this.printCloseBrace (2, 2);
-		
-		sourceBuf.append ("\t\tpublic String getColumnName ()\n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\treturn this.columnName;\n");
-		this.printCloseBrace (2, 2);
-		
-		sourceBuf.append ("\t\tpublic String getColumnAlias ()\n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\treturn TABLE_ALIAS + \".\" + this.columnName;\n");
-		this.printCloseBrace (2, 2);
-		
-		sourceBuf.append ("\t\tpublic String getColumnAliasAsName ()\n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\treturn TABLE_ALIAS  + \".\" + this.columnName + \" as \" + TABLE_ALIAS + \"_\" + this.columnName;\n");
-		this.printCloseBrace (2, 2);
-		
-		sourceBuf.append ("\t\tpublic String getColumnAliasName ()\n");
-		this.printOpenBrace (2, 1);
-		sourceBuf.append ("\t\t\treturn TABLE_ALIAS + \"_\" + this.columnName;\n");
-		this.printCloseBrace (2, 2);
+    private void printColumnsEnum (String tabString)
+    {
+        sourceBuf.append (tabString + "public enum COLUMNS\n");
+        this.printOpenBrace (1, 1, tabString);
 
-		this.printCloseBrace (1, 2);
-	}
-	
-	protected void preprocess ()
-	{
-		
-	}
+        for (Field field : this.fields)
+        {
+            if (field.isPersistable ())
+            {
+                sourceBuf.append (tabString + tabString + field.getName ().toUpperCase () + "(\"" + field.getName () + "\"),\n");
+            }
+        }
+        sourceBuf.append (tabString + tabString + ";\n");
+        sourceBuf.append ("\n");
+        sourceBuf.append (tabString + tabString + "private String columnName;\n\n");
+        // create the constructor
+        sourceBuf.append (tabString + tabString + "private COLUMNS (String columnName)\n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + "this.columnName = columnName;\n");
+        this.printCloseBrace (2, 2, tabString);
+        //create setters/getters
+        sourceBuf.append (tabString + tabString + "public void setColumnName (String columnName)\n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + "this.columnName = columnName;\n");
+        this.printCloseBrace (2, 2, tabString);
 
-	public void generateSource ()
-	{
-		// generate the default stuff from the super class
-		super.printPackage ();
-		
-		super.printImports ();
-		
-		super.printClassComments ();
-		
-		super.printClassDefn ();
+        sourceBuf.append (tabString + tabString + "public String getColumnName ()\n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + "return this.columnName;\n");
+        this.printCloseBrace (2, 2, tabString);
 
-		super.printClassImplements ();
+        sourceBuf.append (tabString + tabString + "public String getColumnAlias ()\n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + "return TABLE_ALIAS + \".\" + this.columnName;\n");
+        this.printCloseBrace (2, 2, tabString);
 
-		this.printOpenBrace (0, 2);
-		
-		this.printDBTableInfo ();
-		
-        this.printSelectAllColumns ();
+        sourceBuf.append (tabString + tabString + "public String getColumnAliasAsName ()\n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + "return TABLE_ALIAS  + \".\" + this.columnName + \" as \" + TABLE_ALIAS + \"_\" + this.columnName;\n");
+        this.printCloseBrace (2, 2, tabString);
 
-		this.printColumnsEnum ();
-		
-		this.printCtor ();
-		
-		this.printRowMapper ();
-		
-		this.printRowUnMapper ();
-		
-		this.printAliasRowMapper ();
-		
-		this.printAllAliasesMethod ();
-		
-		super.printUserSourceCode ();
+        sourceBuf.append (tabString + tabString + "public String getColumnAliasName ()\n");
+        this.printOpenBrace (2, 1, tabString);
+        sourceBuf.append (tabString + tabString + tabString + "return TABLE_ALIAS + \"_\" + this.columnName;\n");
+        this.printCloseBrace (2, 2, tabString);
 
-		this.printCloseBrace (0, 0); // end of class
-		//logger.debug ("Printing Class file content:\n" + sourceBuf.toString ());		
-	}
+        this.printCloseBrace (1, 2, tabString);
+    }
+
+    @Override
+    protected void preprocess ()
+    {
+
+    }
+
+    @Override
+    public void generateSource(String tabString)
+    {
+        // generate the default stuff from the super class
+        super.printPackage ();
+
+        super.printImports ();
+
+        super.printClassComments ();
+
+        super.printClassDefn ();
+
+        super.printClassImplements ();
+
+        this.printOpenBrace (0, 2, tabString);
+
+        this.printDBTableInfo (tabString);
+
+        this.printSelectAllColumns (tabString);
+
+        this.printColumnsEnum (tabString);
+
+        this.printCtor (tabString);
+
+        this.printRowMapper (tabString);
+
+        this.printRowUnMapper (tabString);
+
+        this.printAliasRowMapper (tabString);
+
+        this.printAllAliasesMethod (tabString);
+
+        super.printUserSourceCode (tabString);
+
+        this.printCloseBrace (0, 0, tabString); // end of class
+        //logger.debug ("Printing Class file content:\n" + sourceBuf.toString ());
+    }
 
 }

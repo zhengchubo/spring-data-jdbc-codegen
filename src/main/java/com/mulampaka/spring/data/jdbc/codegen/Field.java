@@ -23,99 +23,99 @@ import java.util.List;
 
 public class Field
 {
-	private ParameterType type;
-	private String name;
-	private int size;
-	private boolean isNullable = true;
-	private boolean isPrimitive = false;
-	private boolean persistable = true;
-	private String defaultValue;
-	private List<String> modifiers = new ArrayList<String> ();
-	
-	public Field ()
-	{
-		
-	}
-	
-	public int getSize ()
-	{
-		return this.size;
-	}
-	
-	public void setSize (int size)
-	{
-		this.size = size;
-	}
-	
-	public boolean isNullable ()
-	{
-		return this.isNullable;
-	}
-	
-	public void setNullable (boolean isNullable)
-	{
-		this.isNullable = isNullable;
-	}
+    private ParameterType type;
+    private String name;
+    private int size;
+    private boolean isNullable = true;
+    private boolean isPrimitive = false;
+    private boolean persistable = true;
+    private String defaultValue;
+    private List<String> modifiers = new ArrayList<String> ();
 
-	public boolean isPrimitive ()
-	{
-		return this.isPrimitive;
-	}
-	
-	public void setPrimitive (boolean isPrimitive)
-	{
-		this.isPrimitive = isPrimitive;
-	}
+    public Field ()
+    {
 
-	public String getDefaultValue ()
-	{
-		return this.defaultValue;
-	}
-	
-	public void setDefaultValue (String defaultValue)
-	{
-		this.defaultValue = defaultValue;
-	}
+    }
 
-	public boolean isPersistable ()
-	{
-		return this.persistable;
-	}
-	
-	public void setPersistable (boolean persistable)
-	{
-		this.persistable = persistable;
-	}
+    public int getSize ()
+    {
+        return this.size;
+    }
 
-	public ParameterType getType ()
-	{
-		return this.type;
-	}
-	
-	public void setType (ParameterType type)
-	{
-		this.type = type;
-	}
-	
-	public String getName ()
-	{
-		return this.name;
-	}
-	
-	public void setName (String name)
-	{
-		this.name = name;
-	}
-	
-	public List<String> getModifiers ()
-	{
-		return this.modifiers;
-	}
-	
-	public void setModifiers (List<String> modifiers)
-	{
-		this.modifiers = modifiers;
-	}
-	
+    public void setSize (int size)
+    {
+        this.size = size;
+    }
+
+    public boolean isNullable ()
+    {
+        return this.isNullable;
+    }
+
+    public void setNullable (boolean isNullable)
+    {
+        this.isNullable = isNullable;
+    }
+
+    public boolean isPrimitive ()
+    {
+        return this.isPrimitive;
+    }
+
+    public void setPrimitive (boolean isPrimitive)
+    {
+        this.isPrimitive = isPrimitive;
+    }
+
+    public String getDefaultValue ()
+    {
+        return this.defaultValue;
+    }
+
+    public void setDefaultValue (String defaultValue)
+    {
+        this.defaultValue = defaultValue;
+    }
+
+    public boolean isPersistable ()
+    {
+        return this.persistable;
+    }
+
+    public void setPersistable (boolean persistable)
+    {
+        this.persistable = persistable;
+    }
+
+    public ParameterType getType ()
+    {
+        return this.type;
+    }
+
+    public void setType (ParameterType type)
+    {
+        this.type = type;
+    }
+
+    public String getName ()
+    {
+        return this.name;
+    }
+
+    public void setName (String name)
+    {
+        this.name = name;
+    }
+
+    public List<String> getModifiers ()
+    {
+        return this.modifiers;
+    }
+
+    public void setModifiers (List<String> modifiers)
+    {
+        this.modifiers = modifiers;
+    }
+
 
 }
