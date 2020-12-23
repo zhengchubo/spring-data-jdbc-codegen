@@ -28,7 +28,7 @@ public class RepositoryClass extends BaseClass
 {
 
     final static Logger logger = LoggerFactory.getLogger (RepositoryClass.class);
-    private static String CLASS_SUFFIX = "Repository";
+    public static String CLASS_SUFFIX = "Repository";
 
     private static String TBL_DESC_CLASS = "com.nurkiewicz.jdbcrepository.TableDescription";
 
@@ -43,8 +43,15 @@ public class RepositoryClass extends BaseClass
     protected void addImports ()
     {
         this.imports.add("org.springframework.beans.factory.annotation.Autowired");
+        this.imports.add("org.springframework.dao.EmptyResultDataAccessException");
         this.imports.add("org.springframework.jdbc.core.JdbcOperations");
+        this.imports.add("org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource");
+        this.imports.add("org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate");
+        this.imports.add("org.springframework.jdbc.core.namedparam.SqlParameterSource");
         this.imports.add("org.springframework.stereotype.Repository");
+        this.imports.add("java.util.List");
+        this.imports.add("java.util.Objects");
+        this.imports.add("javax.annotation.Resource");
     }
 
     protected void printClassAnnotations ()
@@ -224,6 +231,7 @@ public class RepositoryClass extends BaseClass
     protected void printFields (String tabString)
     {
         this.sourceBuf.append(tabString + "@Autowired\n" + tabString + "private JdbcOperations jdbcOperations;\n\n");
+        this.sourceBuf.append(tabString + "@Resource\n" + tabString + "private NamedParameterJdbcTemplate namedTemplate;\n\n");
     }
 
     protected void printMethods (String tabString)
@@ -231,6 +239,39 @@ public class RepositoryClass extends BaseClass
         this.sourceBuf.append(tabString + "protected JdbcOperations getJdbcOperations()\n");
         this.sourceBuf.append(tabString + "{\n");
         this.sourceBuf.append(tabString + tabString + "return this.jdbcOperations;\n");
+        this.sourceBuf.append(tabString + "}\n\n");
+
+        this.sourceBuf.append(tabString + "public " + this.name + " getItemByParam(" + this.name + " param) {\n\n");
+        this.sourceBuf.append(tabString + tabString + "String sql = \" SELECT * FROM \" + " + this.name + DBClass.DB_CLASSSUFFIX + ".getTableName() + \" WHERE 1 = 1 \";\n");
+        this.sourceBuf.append(tabString + tabString + "SqlParameterSource params = new BeanPropertySqlParameterSource(param);\n");
+        this.sourceBuf.append(tabString + tabString + "sql += getEntityParamSql(param) + \" LIMIT 1 \";\n");
+        this.sourceBuf.append(tabString + tabString + "try {\n");
+        this.sourceBuf.append(tabString + tabString + tabString + "return namedTemplate.queryForObject(sql, params, " + this.name + DBClass.DB_CLASSSUFFIX + ".ROW_MAPPER);\n");
+        this.sourceBuf.append(tabString + tabString + "} catch (EmptyResultDataAccessException e) {\n");
+        this.sourceBuf.append(tabString + tabString + tabString + "return null;\n");
+        this.sourceBuf.append(tabString + tabString + "}\n");
+        this.sourceBuf.append(tabString + "}\n\n");
+
+        this.sourceBuf.append(tabString + "public List<" + this.name + "> getListByParam(" + this.name + " param) {\n\n");
+        this.sourceBuf.append(tabString + tabString + "String sql = \" SELECT * FROM \" + " + this.name + DBClass.DB_CLASSSUFFIX + ".getTableName() + \" WHERE 1 = 1 \";\n");
+        this.sourceBuf.append(tabString + tabString + "SqlParameterSource params = new BeanPropertySqlParameterSource(param);\n");
+        this.sourceBuf.append(tabString + tabString + "sql += getEntityParamSql(param);\n");
+        this.sourceBuf.append(tabString + tabString + "return namedTemplate.query(sql, params, " + this.name + DBClass.DB_CLASSSUFFIX + ".ROW_MAPPER);\n");
+        this.sourceBuf.append(tabString + "}\n\n");
+
+        this.sourceBuf.append(tabString + "public Long getCountByParam(" + this.name + " param) {\n\n");
+        this.sourceBuf.append(tabString + tabString + "String sql = \" SELECT COUNT(*) FROM \" + " + this.name + DBClass.DB_CLASSSUFFIX + ".getTableName() + \" WHERE 1 = 1 \";\n");
+        this.sourceBuf.append(tabString + tabString + "SqlParameterSource params = new BeanPropertySqlParameterSource(param);\n");
+        this.sourceBuf.append(tabString + tabString + "sql += getEntityParamSql(param);\n");
+        this.sourceBuf.append(tabString + tabString + "return namedTemplate.queryForObject(sql, params, Long.class);\n");
+        this.sourceBuf.append(tabString + "}\n\n");
+
+        this.sourceBuf.append(tabString + "private String getEntityParamSql(LhManualIbInstitutionBasicInfo param) {\n");
+        this.sourceBuf.append(tabString + tabString + "StringBuffer sb = new StringBuffer();\n");
+        this.sourceBuf.append(tabString + tabString + "if (!Objects.isNull(param.getId())) {\n");
+        this.sourceBuf.append(tabString + tabString + tabString + "sb.append(\" AND \").append(" + this.name + DBClass.DB_CLASSSUFFIX + ".COLUMNS.ID.getColumnName()).append(\" = :id \");\n");
+        this.sourceBuf.append(tabString + tabString + "}\n");
+        this.sourceBuf.append(tabString + tabString + "return sb.toString();\n");
         this.sourceBuf.append(tabString + "}\n\n");
     }
 
@@ -253,8 +294,8 @@ public class RepositoryClass extends BaseClass
         super.printOpenBrace (0, 2, tabString);
         super.printLogger (tabString);
         this.printFields(tabString);
-        this.printMethods(tabString);
         this.printCtor (tabString);
+        this.printMethods(tabString);
 
         this.printFKeyMethods (tabString);
 

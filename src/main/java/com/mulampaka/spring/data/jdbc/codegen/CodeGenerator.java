@@ -132,6 +132,7 @@ public class CodeGenerator
             String domainPackageName = this.properties.getProperty ("domain.package.name");
             String dbPackageName = this.properties.getProperty ("repository.db.package.name");
             String repositoryPackageName = this.properties.getProperty ("repository.package.name");
+            String servicePackageName = this.properties.getProperty ("service.package.name");
 
             conn = this.getConnection ();
             DatabaseMetaData metaData = conn.getMetaData ();
@@ -212,12 +213,13 @@ public class CodeGenerator
                 CodeGenUtil.createPackage (srcFolderPath, domainPackageName);
                 CodeGenUtil.createPackage (srcFolderPath, dbPackageName);
                 CodeGenUtil.createPackage (srcFolderPath, repositoryPackageName);
+                CodeGenUtil.createPackage (srcFolderPath, servicePackageName);
+                CodeGenUtil.createPackage (srcFolderPath, servicePackageName + ".impl");
 
                 ResultSet rset = metaData.getTables (null, null, null, new String[] { "TABLE" });
                 while (rset.next ())
                 {
                     String tableName = rset.getString ("TABLE_NAME");
-                    logger.info ("Found Table:" + tableName);
                     if (this.ignoreTable (tableName.toLowerCase ()))
                     {
                         logger.info ("Table:{} is in the ignore table list, not generating code for this table.", tableName);
@@ -226,6 +228,7 @@ public class CodeGenerator
                     if (this.hasAssignTable() && !this.assignTable(tableName.toLowerCase())) {
                         continue;
                     }
+                    logger.info ("Start to handle Table:" + tableName);
                     logger.debug ("DB Product name:{}", metaData.getDatabaseProductName ());
                     logger.debug ("DB Product version:{}", metaData.getDatabaseProductVersion ());
 
@@ -322,6 +325,7 @@ public class CodeGenerator
         String domainPackageName = this.properties.getProperty ("domain.package.name");
         String dbPackageName = this.properties.getProperty ("repository.db.package.name");
         String repositoryPackageName = this.properties.getProperty ("repository.package.name");
+        String servicePackageName = this.properties.getProperty ("service.package.name");
 
         String generateJsr303AnnotationsStr = this.properties.getProperty ("generate.jsr303.annotations");
         boolean generateJsr303Annotations = false;
@@ -402,6 +406,27 @@ public class CodeGenerator
         repoClass.setName (tableName);
         repoClass.setRootFolderPath (rootFolderPath);
         repoClass.setPackageName (repositoryPackageName);
+
+        // create the service interface class
+        ServiceInterfaceClass serviceInterfaceClass = new ServiceInterfaceClass();
+        serviceInterfaceClass.setDontPluralizeWords (dontPluralizeWords);
+        serviceInterfaceClass.getImports ().add (domainPackageName + "." + WordUtils.capitalize (CodeGenUtil.normalize (domainClass.getName ())));
+        serviceInterfaceClass.setName (tableName);
+        serviceInterfaceClass.setRootFolderPath (rootFolderPath);
+        serviceInterfaceClass.setPackageName (servicePackageName);
+
+        // create the service implement class
+        ServiceImplClass serviceImplClass = new ServiceImplClass();
+        serviceImplClass.setDontPluralizeWords (dontPluralizeWords);
+        serviceImplClass.createLogger ();
+        serviceImplClass.getImports ().add (domainPackageName + "." + WordUtils.capitalize (CodeGenUtil.normalize (domainClass.getName ())));
+        serviceImplClass.getImports ().add (repositoryPackageName + "." + WordUtils.capitalize (CodeGenUtil.normalize (repoClass.getName ())) + RepositoryClass.CLASS_SUFFIX);
+        String serviceFullClassName = servicePackageName + "." + WordUtils.capitalize (CodeGenUtil.normalize (serviceInterfaceClass.getName ())) + ServiceInterfaceClass.CLASS_SUFFIX;
+        serviceImplClass.setName (tableName);
+        serviceImplClass.setInterfaceName(serviceFullClassName);
+        serviceImplClass.setRootFolderPath (rootFolderPath);
+        serviceImplClass.setPackageName (servicePackageName + ".impl");
+
 
         ResultSet pkSet = metaData.getPrimaryKeys (null, null, tableName);
         while (pkSet.next ())
@@ -647,6 +672,9 @@ public class CodeGenerator
         domainClass.createFile (this.tabString);
         dbClass.createFile (this.tabString);
         repoClass.createFile (this.tabString);
+        serviceInterfaceClass.createFile(this.tabString);
+        serviceImplClass.createFile(this.tabString);
+
     }
 
     public Connection getConnection () throws SQLException
