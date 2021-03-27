@@ -594,10 +594,19 @@ public class CodeGenerator
                 fieldType = ParameterType.DOUBLE;
                 parameter = new Parameter (colName, ParameterType.DOUBLE);
             }
-            else if ((type == Types.FLOAT) || (type == Types.DECIMAL))
+            else if (type == Types.FLOAT)
             {
                 fieldType = ParameterType.FLOAT;
                 parameter = new Parameter (colName, ParameterType.FLOAT);
+            }
+            else if (type == Types.DECIMAL)
+            {
+                fieldType = ParameterType.BIGDECIMAL;
+                parameter = new Parameter (colName, ParameterType.BIGDECIMAL);
+                if (!domainClass.getImports ().contains ("java.math.BigDecimal"))
+                {
+                    domainClass.getImports ().add ("java.math.BigDecimal");
+                }
             }
             else if ((type == Types.INTEGER) || (type == Types.SMALLINT) || (type == Types.TINYINT))
             {

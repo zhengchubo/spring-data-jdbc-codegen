@@ -44,6 +44,7 @@ public class ServiceImplClass extends BaseClass
     {
         this.imports.add("org.springframework.stereotype.Service");
         this.imports.add("javax.annotation.Resource");
+        this.imports.add("java.util.ArrayList;");
         this.imports.add("java.util.Objects");
         this.imports.add("java.util.List");
     }
@@ -59,7 +60,7 @@ public class ServiceImplClass extends BaseClass
 
     protected void printClassAnnotations ()
     {
-        sourceBuf.append ("@Service(\"" + this.name.substring(0, 1).toLowerCase() + this.name.substring(1) + "\")\n");
+        sourceBuf.append ("@Service(\"" + this.name.substring(0, 1).toLowerCase() + this.name.substring(1) + "Service\")\n");
     }
 
     @Override
@@ -118,14 +119,14 @@ public class ServiceImplClass extends BaseClass
 
         this.sourceBuf.append(tabString + "@Override\n" + tabString + "public List<" + this.name + "> getListByParam(" + this.name + " param) {\n\n");
         this.sourceBuf.append(tabString + tabString + "if (Objects.isNull(param)) {\n");
-        this.sourceBuf.append(tabString + tabString + tabString + "return null;\n");
+        this.sourceBuf.append(tabString + tabString + tabString + "return new ArrayList<>();\n");
         this.sourceBuf.append(tabString + tabString + "}\n");
         this.sourceBuf.append(tabString + tabString + "return " + repoName + ".getListByParam(param);\n");
         this.sourceBuf.append(tabString + "}\n\n");
 
         this.sourceBuf.append(tabString + "@Override\n" + tabString + "public Long getCountByParam(" + this.name + " param) {\n\n");
         this.sourceBuf.append(tabString + tabString + "if (Objects.isNull(param)) {\n");
-        this.sourceBuf.append(tabString + tabString + tabString + "return null;\n");
+        this.sourceBuf.append(tabString + tabString + tabString + "return 0L;\n");
         this.sourceBuf.append(tabString + tabString + "}\n");
         this.sourceBuf.append(tabString + tabString + "return " + repoName + ".getCountByParam(param);\n");
         this.sourceBuf.append(tabString + "}\n\n");

@@ -18,6 +18,7 @@
  */
 package com.mulampaka.spring.data.jdbc.codegen;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -252,6 +253,9 @@ public class DomainClass extends BaseClass
                         break;
                     case FLOAT:
                         sourceBuf.append (" = " + Float.parseFloat (val) + "F;\n\n");
+                        break;
+                    case BIGDECIMAL:
+                        sourceBuf.append (" = " + new BigDecimal (val) + ";\n\n");
                         break;
                     case DATE:
                     case TIMESTAMP:

@@ -34,6 +34,7 @@ public enum ParameterType
     INTEGER ("Integer", "int"),
     FLOAT ("Float", "float"),
     DOUBLE ("Double", "double"),
+    BIGDECIMAL ("BigDecimal", "BigDecimal"),
     CHAR ("Character", "char"),
     LIST ("List", "List")
     ;

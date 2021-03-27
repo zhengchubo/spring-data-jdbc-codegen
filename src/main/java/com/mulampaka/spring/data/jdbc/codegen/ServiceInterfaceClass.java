@@ -47,6 +47,11 @@ public class ServiceInterfaceClass extends BaseClass
     }
 
     @Override
+    protected void printClassComments ()
+    {
+    }
+
+    @Override
     protected void printClassDefn ()
     {
         sourceBuf.append ("public interface " + WordUtils.capitalize (CodeGenUtil.normalize (name)) + this.classSuffix);
