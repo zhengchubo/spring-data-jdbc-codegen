@@ -75,6 +75,7 @@ public class DomainClass extends BaseClass
     protected void addImports ()
     {
         this.imports.add ("org.apache.commons.lang3.builder.ToStringBuilder");
+        this.imports.add ("java.io.Serializable");
     }
 
     public boolean isGenerateJsr303Annotations ()
@@ -100,7 +101,7 @@ public class DomainClass extends BaseClass
         if (StringUtils.isNotBlank (interfaceName))
         {
             String implementsClass = this.interfaceName.substring (StringUtils.lastIndexOf (this.interfaceName, ".") + 1);
-            sourceBuf.append (" implements " + implementsClass);
+            sourceBuf.append (" implements Serializable," + implementsClass);
             if (!this.pkeys.isEmpty ())
             {
                 if (pkeys.size () == 1)
