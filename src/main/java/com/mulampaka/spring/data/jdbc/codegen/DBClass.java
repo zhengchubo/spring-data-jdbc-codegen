@@ -101,6 +101,11 @@ public class DBClass extends BaseClass
                     typeName = "Timestamp";
                 }
                 sourceBuf.append (tabString + tabString + tabString + "obj.set" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "(rs.get" + typeName + "(COLUMNS." + field.getName ().toUpperCase () + ".getColumnName()));\n");
+                if (field.getType() == ParameterType.LONG || field.getType() == ParameterType.INTEGER) {
+                    sourceBuf.append (tabString + tabString + tabString + "if (rs.wasNull()) {\n");
+                    sourceBuf.append (tabString + tabString + tabString + tabString + "obj.set").append(WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "(null);\n");
+                    sourceBuf.append (tabString + tabString + tabString + "}\n");
+                }
             }
         }
 
@@ -227,6 +232,11 @@ public class DBClass extends BaseClass
                     typeName = "Timestamp";
                 }
                 sourceBuf.append (tabString + tabString + tabString + "obj.set" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "(rs.get" + typeName + "(COLUMNS." + field.getName ().toUpperCase () + ".getColumnAliasName()));\n");
+                if (field.getType() == ParameterType.LONG || field.getType() == ParameterType.INTEGER) {
+                    sourceBuf.append (tabString + tabString + tabString + "if (rs.wasNull()) {\n");
+                    sourceBuf.append (tabString + tabString + tabString + tabString + "obj.set").append(WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "(null);\n");
+                    sourceBuf.append (tabString + tabString + tabString + "}\n");
+                }
             }
         }
         if (this.pkeys.size () > 1)
