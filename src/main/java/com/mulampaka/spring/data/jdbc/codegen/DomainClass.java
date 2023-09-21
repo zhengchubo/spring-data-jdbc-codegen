@@ -123,6 +123,9 @@ public class DomainClass extends BaseClass
 
         for (Field field : fields)
         {
+            if (StringUtils.isNotEmpty(field.getComment())) {
+                sourceBuf.append(tabString).append("/**\n").append(tabString).append(" * ").append(field.getComment()).append("\n").append(tabString).append(" */\n");
+            }
 
             String type = field.getType ().getName ();
             if (field.isPrimitive ())

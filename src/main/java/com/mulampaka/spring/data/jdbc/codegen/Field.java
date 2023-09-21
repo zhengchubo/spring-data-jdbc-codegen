@@ -31,6 +31,7 @@ public class Field
     private boolean persistable = true;
     private String defaultValue;
     private List<String> modifiers = new ArrayList<String> ();
+    private String comment;
 
     public Field ()
     {
@@ -117,5 +118,11 @@ public class Field
         this.modifiers = modifiers;
     }
 
+    public String getComment() {
+        return comment;
+    }
 
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 }

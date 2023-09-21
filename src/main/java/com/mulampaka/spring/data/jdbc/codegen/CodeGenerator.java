@@ -558,6 +558,8 @@ public class CodeGenerator
             int colSize = cset.getInt ("COLUMN_SIZE");
             logger.debug ("Column size:{}", colSize);
 
+            String comment = cset.getString("REMARKS");
+
             String defaultValue = cset.getString ("COLUMN_DEF");
             logger.debug ("Column Default value:{}", defaultValue);
             String nullable = cset.getString ("IS_NULLABLE");
@@ -662,6 +664,7 @@ public class CodeGenerator
                 field.setSize (colSize);
                 field.setName (colName);
                 field.setType (fieldType);
+                field.setComment(comment);
                 field.setDefaultValue (defaultValue);
 
                 boolean isPkCol = domainClass.getPkeys ().containsKey (colName);

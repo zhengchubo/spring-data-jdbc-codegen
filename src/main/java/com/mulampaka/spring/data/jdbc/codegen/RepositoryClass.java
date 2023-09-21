@@ -268,7 +268,7 @@ public class RepositoryClass extends BaseClass
 
         this.sourceBuf.append(tabString + "private String getEntityParamSql(" + this.name + " param) {\n");
         this.sourceBuf.append(tabString + tabString + "StringBuffer sb = new StringBuffer();\n");
-        this.sourceBuf.append(tabString + tabString + "if (!Objects.isNull(param.getId())) {\n");
+        this.sourceBuf.append(tabString + tabString + "if (Objects.nonNull(param.getId())) {\n");
         this.sourceBuf.append(tabString + tabString + tabString + "sb.append(\" AND \").append(" + this.name + DBClass.DB_CLASSSUFFIX + ".COLUMNS.ID.getColumnName()).append(\" = :id \");\n");
         this.sourceBuf.append(tabString + tabString + "}\n");
         this.sourceBuf.append(tabString + tabString + "return sb.toString();\n");

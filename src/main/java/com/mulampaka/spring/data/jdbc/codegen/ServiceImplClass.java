@@ -44,7 +44,7 @@ public class ServiceImplClass extends BaseClass
     {
         this.imports.add("org.springframework.stereotype.Service");
         this.imports.add("javax.annotation.Resource");
-        this.imports.add("java.util.ArrayList;");
+        this.imports.add("java.util.ArrayList");
         this.imports.add("java.util.Objects");
         this.imports.add("java.util.List");
     }
@@ -54,7 +54,7 @@ public class ServiceImplClass extends BaseClass
     {
         sourceBuf.append ("\n/**\n");
         sourceBuf.append (" *\n");
-        sourceBuf.append (" * @author Anonymous\n");
+        sourceBuf.append (" * @author Justin Wu\n");
         sourceBuf.append (" */\n");
     }
 
@@ -104,7 +104,7 @@ public class ServiceImplClass extends BaseClass
     protected void printFields (String tabString)
     {
         String repoName = repoClassName.substring(0, 1).toLowerCase() + repoClassName.substring(1);
-        this.sourceBuf.append(tabString + "@Resource(name = \"" + repoName + "\")\n" + tabString + repoClassName + " " + repoName + ";\n\n");
+        this.sourceBuf.append(tabString + "@Resource(name = \"" + repoName + "\")\n" + tabString + "private " + repoClassName + " " + repoName + ";\n\n");
     }
 
     protected void printMethods (String tabString)
