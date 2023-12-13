@@ -98,6 +98,10 @@ public class DBClass extends BaseClass
                 }
                 else if (field.getType () == ParameterType.DATE)
                 {
+                    typeName = "Date";
+                }
+                else if (field.getType () == ParameterType.DATETIME)
+                {
                     typeName = "Timestamp";
                 }
                 sourceBuf.append (tabString + tabString + tabString + "obj.set" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "(rs.get" + typeName + "(COLUMNS." + field.getName ().toUpperCase () + ".getColumnName()));\n");
@@ -134,7 +138,7 @@ public class DBClass extends BaseClass
         {
             if (field.isPersistable ())
             {
-                if (field.getType () == ParameterType.DATE)
+                if (field.getType () == ParameterType.DATETIME)
                 {
                     sourceBuf.append (tabString + tabString + tabString + "if (" + objName + ".get" + WordUtils.capitalize (CodeGenUtil.normalize (field.getName ())) + "() != null)\n");
                     this.printOpenBrace (3, 1, tabString);
@@ -228,6 +232,10 @@ public class DBClass extends BaseClass
                     typeName = "Int";
                 }
                 else if (field.getType () == ParameterType.DATE)
+                {
+                    typeName = "Date";
+                }
+                else if (field.getType () == ParameterType.DATETIME)
                 {
                     typeName = "Timestamp";
                 }

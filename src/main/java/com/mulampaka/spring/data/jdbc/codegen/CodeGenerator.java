@@ -617,7 +617,7 @@ public class CodeGenerator
             }
             else if ((type == Types.TIMESTAMP) || (type == Types.TIME) || (type == Types.DATE))
             {
-                fieldType = ParameterType.DATE;
+                fieldType = (type == Types.DATE) ? ParameterType.DATE : ParameterType.DATETIME;
                 if (!domainClass.getImports ().contains ("java.util.Date"))
                 {
                     domainClass.getImports ().add ("java.util.Date");
@@ -626,7 +626,7 @@ public class CodeGenerator
                 {
                     dbClass.getImports ().add ("java.sql.Timestamp");
                 }
-                parameter = new Parameter (colName, ParameterType.DATE);
+                parameter = new Parameter (colName, fieldType);
             }
             else if ((type == Types.BIT) || (type == Types.BOOLEAN))
             {

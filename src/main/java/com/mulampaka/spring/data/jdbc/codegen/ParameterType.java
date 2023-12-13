@@ -29,6 +29,7 @@ public enum ParameterType
     STRING ("String", "String"),
     BOOLEAN ("Boolean", "boolean"),
     DATE ("Date", "Date"),
+    DATETIME ("Date", "Date"),
     TIMESTAMP ("Timestamp", "Timestamp"),
     LONG ("Long", "long"),
     INTEGER ("Integer", "int"),

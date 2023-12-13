@@ -110,12 +110,14 @@ public abstract class BaseClass
 
     public static String generateUserSourceCodeTags (String tabString)
     {
-        return tabString + "" + COMMENT_START + "\n\n" + tabString + COMMENT_END + "\n\n";
+//        return tabString + "" + COMMENT_START + "\n\n" + tabString + COMMENT_END + "\n\n";
+        return "";
     }
 
     protected void printClassComments ()
     {
-        sourceBuf.append (generateClassComments ());
+//        sourceBuf.append (generateClassComments ());
+        sourceBuf.append("\n\n");
     }
 
     protected void printOpenBrace (int indentLevel, int newLines, String tabString)
@@ -288,7 +290,7 @@ public abstract class BaseClass
         String userSource = this.userSourceBuf.toString ();
         if (StringUtils.isBlank (userSource))
         {
-            this.sourceBuf.append (BaseClass.generateUserSourceCodeTags (tabString));
+//            this.sourceBuf.append (BaseClass.generateUserSourceCodeTags (tabString));
         }
         else
         {
